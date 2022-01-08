@@ -1,0 +1,133 @@
+import java.io.*;
+import java.util.HashMap;
+import java.util.*;
+import java.util.Arrays;
+import java.util.ArrayList;
+
+public class MyClass
+{
+    public static void main(String args[])
+    {
+        HashMap<Character, Long> hm=new HashMap<Character, Long>();
+        Long tot;
+        ArrayList<Long> total=new ArrayList<Long>();
+        try  
+        {  
+            File file = new File("/uploads/Day_10.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            
+            hm.put('>', 0L);
+            hm.put(']', 0L);
+            hm.put('}', 0L);
+            hm.put(')', 0L);
+            
+            while((line=br.readLine())!=null)  
+            {
+                
+                ArrayList<Character> op=new ArrayList<Character>();
+                ArrayList<Character> cl=new ArrayList<Character>();
+                tot=0L;
+                boolean b=true;
+                for(int i=0; i<line.length(); i++)
+                {
+                    char ch = line.charAt(i);
+                    //Character c=new Character(ch);
+                    switch(ch)
+                    {
+                        case '<':
+                            op.add(ch);
+                            cl.add('>');
+                            break;
+                            
+                        case '{':
+                            op.add(ch);
+                            cl.add('}');
+                            break;
+                        
+                        case '(':
+                            op.add(ch);
+                            cl.add(')');
+                            break;
+                        
+                        case '[':
+                            op.add(ch);
+                            cl.add(']');
+                            break;
+                            
+                        default:
+                            b = check(cl, ch);
+                    }
+                    
+                    if(b==false)
+                    {
+                        hm.put(ch, hm.get(ch)+1);
+                        break;
+                    }
+                }
+                
+                if(b==true)
+                {
+                    for(int j=cl.size()-1; j>=0; j--)
+                    {
+                        char ccl=cl.get(j);
+                        Long brack=0L;
+                        switch(ccl)
+                        {
+                            case ')':
+                                brack=1L;
+                                break;
+                            case ']':
+                                brack=2L;
+                                break;
+                            case '}':
+                                brack=3L;
+                                break;
+                            case '>':
+                                brack=4L;
+                                break;
+                        }
+                        tot=tot*5 + brack;
+                    }
+                    total.add(tot);
+                }
+            }
+            
+            Long sq=57L;
+            Long cr=1197L;
+            Long ro=3L;
+            Long gr=25137L;
+            
+            Long to=hm.get(']')*sq + hm.get(')')*ro + hm.get('>')*gr + hm.get('}')*cr;
+            System.out.println(to);
+            
+            
+            Collections.sort(total);
+            int si=total.size();
+            System.out.println(total.get(si/2));
+            fr.close();    //closes the stream and release the resources
+            //System.out.print(hm);
+            
+            
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+    }
+    
+    static boolean check(ArrayList<Character> al, Character ch)
+    {
+        int l=al.size();
+        
+        if(al.get(l-1)==ch)
+        {
+            al.remove(l-1);
+            return true;
+        }
+        
+        else
+            return false;
+    }
+}
