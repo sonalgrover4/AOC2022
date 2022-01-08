@@ -1,0 +1,133 @@
+import java.io.*;
+import java.util.HashMap;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.ArrayList;
+
+public class MyClass
+{
+    static HashMap<String, ArrayList<String>> hm=new HashMap<String, ArrayList<String>>();
+    static int path_cnt=0;
+    static int dup_path_cnt=0;
+    
+    public static void main(String args[])
+    {
+        try  
+        {  
+            File file = new File("/uploads/Day_12.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            while((line=br.readLine())!=null)  
+            {
+                String[] part = line.split("-");
+                String n1 = part[0];
+                String n2 = part[1];
+                boolean f=false;
+                if(n2.equals("start") || n1.equals("end"))
+                {
+                    String temp=n1;
+                    n1=n2;
+                    n2=temp;
+                    f=true;
+                }
+                if(n1.equals("start") || n2.equals("end"))
+                    f=true;
+                
+                addVals(n1,n2);
+                if(f==false)
+                    addVals(n2,n1);
+            }
+            fr.close();    //closes the stream and release the resources
+            System.out.println(hm);
+            
+            check("start", "");
+            System.out.println(path_cnt);
+            checkDup("start", "", 0);
+            System.out.println(dup_path_cnt);
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+    }
+    
+    static void addVals(String s1, String s2)
+    {
+        if(!(hm.containsKey(s1)))
+            hm.put(s1, new ArrayList<String>());
+            
+        hm.get(s1).add(s2);
+    }
+    
+    static void check(String node, String s)
+    {
+        boolean flag=false;
+        if(node.equals("end"))
+        {
+            s+=";"+node;
+            //System.out.println(s);
+            path_cnt+=1;
+            flag=true;
+        }
+        
+        if(flag==false)
+        {
+            char ch=node.charAt(0);
+            if(((!Character.isUpperCase(ch)) && (!s.contains(";"+node))) || Character.isUpperCase(ch))
+            {
+                s+=";"+node;
+                //System.out.println(s);
+                for(int i=0; i<hm.get(node).size(); i++)
+                    check(hm.get(node).get(i), s);
+            }
+        }
+    }
+    
+    static void checkDup(String node, String s, int n)
+    {
+        boolean flag=false;
+        if(node.equals("end"))
+        {
+            s+=";"+node;
+            //System.out.println(s);
+            dup_path_cnt+=1;
+            flag=true;
+        }
+        
+        if(flag==false)
+        {
+            char ch=node.charAt(0);
+            if(Character.isUpperCase(ch))
+            {
+                s+=";"+node;
+                //System.out.println(s);
+                for(int i=0; i<hm.get(node).size(); i++)
+                    checkDup(hm.get(node).get(i), s, n);
+            }
+            else
+            {
+                if(!s.contains(";"+node))
+                {
+                    s+=";"+node;
+                    //System.out.println(s);
+                    for(int i=0; i<hm.get(node).size(); i++)
+                        checkDup(hm.get(node).get(i), s, n);
+                }
+                else
+                {
+                    if(n!=1)
+                    {
+                        s+=";"+node;
+                        //System.out.println(s);
+                        for(int i=0; i<hm.get(node).size(); i++)
+                        {
+                            n=1;
+                            checkDup(hm.get(node).get(i), s, n);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
