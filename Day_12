@@ -66,7 +66,6 @@ public class MyClass
         if(node.equals("end"))
         {
             s+=";"+node;
-            //System.out.println(s);
             path_cnt+=1;
             flag=true;
         }
@@ -77,7 +76,6 @@ public class MyClass
             if(((!Character.isUpperCase(ch)) && (!s.contains(";"+node))) || Character.isUpperCase(ch))
             {
                 s+=";"+node;
-                //System.out.println(s);
                 for(int i=0; i<hm.get(node).size(); i++)
                     check(hm.get(node).get(i), s);
             }
@@ -90,7 +88,6 @@ public class MyClass
         if(node.equals("end"))
         {
             s+=";"+node;
-            //System.out.println(s);
             dup_path_cnt+=1;
             flag=true;
         }
@@ -101,7 +98,6 @@ public class MyClass
             if(Character.isUpperCase(ch))
             {
                 s+=";"+node;
-                //System.out.println(s);
                 for(int i=0; i<hm.get(node).size(); i++)
                     checkDup(hm.get(node).get(i), s, n);
             }
@@ -110,7 +106,6 @@ public class MyClass
                 if(!s.contains(";"+node))
                 {
                     s+=";"+node;
-                    //System.out.println(s);
                     for(int i=0; i<hm.get(node).size(); i++)
                         checkDup(hm.get(node).get(i), s, n);
                 }
@@ -119,7 +114,6 @@ public class MyClass
                     if(n!=1)
                     {
                         s+=";"+node;
-                        //System.out.println(s);
                         for(int i=0; i<hm.get(node).size(); i++)
                         {
                             n=1;
