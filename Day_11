@@ -56,7 +56,6 @@ public class MyClass extends Point
             ArrayList<Point> al=new ArrayList<Point>();
             for(Point p: hm.keySet())
                 hm.put(p, hm.get(p)+1);
-            //printhm();
             
             boolean flag;
             do
