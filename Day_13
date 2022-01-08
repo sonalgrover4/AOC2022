@@ -1,0 +1,123 @@
+import java.io.*;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.*;
+
+public class MyClass extends Point
+{
+    static HashSet<Point> hs=new HashSet<Point>();
+    static int x_max=0;
+    static int y_max=0;
+    
+    public static void main(String args[])
+    {
+        int total=0;
+        
+        try  
+        {  
+            File file = new File("/uploads/Day_13.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            while((line=br.readLine())!=null)  
+            {
+                if(line.length()>1)
+                {
+                    if(line.charAt(0)!='f')
+                    {
+                        String[] bre=line.split(",");
+                        int x=Integer.parseInt(bre[0]);
+                        int y=Integer.parseInt(bre[1]);
+                        
+                        Point p=new Point(x,y);
+                        hs.add(p);
+                    }
+                    else
+                    {
+                        String[] bre=line.split(" ");
+                        String[] ins=bre[2].split("=");
+                        String axis=ins[0];
+                        int val=Integer.parseInt(ins[1]);
+                        total+=1;
+                        fold(axis, val, total);
+                    }
+                }
+            }
+            fr.close();    //closes the stream and release the resources
+            prinths();
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+    }
+    
+    static void fold(String a, int v, int  t)
+    {
+        x_max=0;
+        y_max=0;
+        HashSet<Point> hs_temp=new HashSet<Point>();
+        for(Point p: hs)
+        {
+            int x=p.x;
+            int y=p.y;
+            
+            if(x_max<x)
+                x_max=x;
+            if(y_max<y)
+                y_max=y;
+
+            if(a.equals("y"))
+            {
+                if(y<v)
+                    hs_temp.add(p);
+                else
+                {
+                    int y_temp=v-(y-v);
+                    Point p_temp=new Point(x,y_temp);
+                    hs_temp.add(p_temp);
+                }
+            }
+            else
+            {
+               if(x<v)
+                    hs_temp.add(p);
+                else
+                {
+                    int x_temp=v-(x-v);
+                    Point p_temp=new Point(x_temp, y);
+                    hs_temp.add(p_temp);
+                }
+            }
+        }
+        hs.clear();
+        hs.addAll(hs_temp);
+        hs_temp.clear();
+        System.out.println("Pass "+t+" : "+hs.size());
+    }
+    
+    static void prinths()
+    {
+        int[][] temp=new int[x_max+1][y_max+1];
+        for(Point p: hs)
+        {
+            int x=p.x;
+            int y=p.y;
+            
+            temp[x][y]=1;
+        }
+        
+        for(int r=0; r<=y_max; r++)
+        {
+            for(int c=0; c<=x_max; c++)
+            {
+                if(temp[c][r]==1)
+                    System.out.print("#");
+                else
+                    System.out.print(".");
+            }
+            System.out.println();
+        }
+    }
+}
