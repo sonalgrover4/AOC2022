@@ -1,0 +1,113 @@
+import java.io.*;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.*;
+
+public class MyClass
+{
+    static HashMap<String, String> rules=new HashMap<String, String>();
+    static HashMap<String, Long> hm=new HashMap<String, Long>();
+    static HashMap<String, Long> count=new HashMap<String, Long>();
+    
+    public static void main(String args[])
+    {
+        try  
+        {  
+            File file = new File("/uploads/Day_14.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            while((line=br.readLine())!=null)  
+            {
+                if(line.contains("->"))
+                {
+                    String[] bre=line.split("->");
+                    String r1=bre[0].trim();
+                    String r2=bre[1].trim();
+                    rules.put(r1, r2);
+                }
+                else
+                {
+                    if(line.length()>1)
+                    {
+                        for(int i=0; i<line.length()-1; i++)
+                        {
+                            String s=line.substring(i, i+2);
+                            addVals(hm, s, 1L);
+                        }
+                        for(int i=0; i<line.length(); i++)
+                        {
+                            String ind=line.substring(i, i+1);
+                            addVals(count, ind, 1L);
+                        }
+                    }
+                }
+            }
+            
+            fr.close();    //closes the stream and release the resources
+            
+            for(int i=1; i<=40; i++)
+            {
+                addStep();
+                if(i==10)
+                    System.out.println(sub());
+            }
+            System.out.println(sub());
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+    }
+    
+    static void addVals(HashMap<String, Long> hm, String s, Long n)
+    {
+        if(hm.containsKey(s))
+            hm.put(s, hm.get(s)+n);
+        else
+            hm.put(s, n);
+    }
+   
+    static void addStep()
+    {
+        HashMap<String, Long> hm2=new HashMap<String, Long>();
+        
+        for (String ss : hm.keySet())
+        {
+            Long occ=hm.get(ss);
+            if(rules.containsKey(ss))
+            {
+                String val=rules.get(ss);
+                String[] ind=ss.split("");
+                
+                String s1=ind[0]+val;
+                String s2=val+ind[1];
+                
+                addVals(hm2, s1, occ);
+                addVals(hm2, s2, occ);
+                addVals(count, val, occ);
+            }
+            else
+                addVals(hm2, ss, occ);
+        }
+        hm.clear();
+        hm.putAll(hm2);
+        hm2.clear();
+    }
+    
+    static Long sub()
+    {
+        Long min = Long.MAX_VALUE;
+        Long max = 0L;
+        
+        for (String ss : count.keySet())
+        {
+            Long occ=count.get(ss);
+            if(occ>max)
+                max=occ;
+            if(occ<min)
+                min=occ;
+        }
+        return(max-min);
+    }
+}
