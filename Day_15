@@ -1,0 +1,190 @@
+import java.io.*;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.*;
+
+public class MyClass extends Point
+{
+    static HashMap<Point, Integer> hm=new HashMap<Point, Integer>();
+    static HashMap<Point, Integer> dist=new HashMap<Point, Integer>();
+    static HashSet<Point> st=new HashSet<Point>();
+    static int r_max=-1;
+    static int c_max=0;
+    
+    public static void main(String args[])
+    {
+        try  
+        {  
+            File file = new File("/uploads/Demo.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            
+            while((line=br.readLine())!=null)  
+            {
+                String[] bre=line.split("");
+                
+                r_max+=1;
+                if(r_max==0)
+                    c_max=line.length()-1;
+                for(int i=0; i<=c_max; i++)
+                {
+                    int val=Integer.parseInt(bre[i]);
+                    Point p=new Point(r_max,i);
+                    hm.put(p, val);
+                    
+                    for(int j=1; j<=8; j++)
+                    {
+                        int u_val=val+j;
+                        if(u_val>9)
+                            u_val=u_val-9;
+                            
+                        switch(j)
+                        {
+                            case 1:
+                               hm.put(new Point(r_max, i+c_max+1), u_val);
+                               hm.put(new Point(r_max+c_max+1, i), u_val);
+                               break;
+                               
+                            case 2:
+                                hm.put(new Point(r_max, i+(c_max+1)*2), u_val);
+                                hm.put(new Point(r_max+c_max+1, i+c_max+1), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*2, i), u_val);
+                                break;
+                                
+                            case 3:
+                                hm.put(new Point(r_max, i+(c_max+1)*3), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*2, i+c_max+1), u_val);
+                                hm.put(new Point(r_max+c_max+1, i+(c_max+1)*2), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*3, i), u_val);
+                                break;
+                                
+                            case 4:
+                                hm.put(new Point(r_max, i+(c_max+1)*4), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*3, i+c_max+1), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*2, i+(c_max+1)*2), u_val);
+                                hm.put(new Point(r_max+c_max+1, i+(c_max+1)*3), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*4, i), u_val);
+                                break;
+                                
+                            case 5:
+                                hm.put(new Point(r_max+c_max+1, i+(c_max+1)*4), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*4, i+c_max+1), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*3, i+(c_max+1)*2), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*2, i+(c_max+1)*3), u_val);
+                                break;
+                                
+                            case 6:
+                                hm.put(new Point(r_max+(c_max+1)*2, i+(c_max+1)*4), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*3, i+(c_max+1)*3), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*4, i+(c_max+1)*2), u_val);
+                                break;
+                                
+                            case 7:
+                                hm.put(new Point(r_max+(c_max+1)*4, i+(c_max+1)*3), u_val);
+                                hm.put(new Point(r_max+(c_max+1)*3, i+(c_max+1)*4), u_val);
+                                break;
+                                
+                            case 8:
+                                hm.put(new Point(r_max+(c_max+1)*4, i+(c_max+1)*4), u_val);
+                                break;
+                        }
+                    }
+                }
+            }
+            dist.put(new Point(0, 0), 0);
+            int r_orig=r_max;
+            int c_orig=c_max;
+            
+            r_max=(r_max+1)*5-1;
+            c_max=(c_max+1)*5-1;
+            
+            fr.close();    //closes the stream and release the resources
+            
+            calc(r_orig, c_orig);
+            Point l1=new Point(r_orig, c_orig);
+            System.out.println(dist.get(l1));
+            
+            st.clear();
+            dist.clear();
+            dist.put(new Point(0, 0), 0);
+            
+            calc(r_max, c_max);
+            Point l2=new Point(r_max, c_max);
+            System.out.println(dist.get(l2));
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+    }
+    
+    static void calc(int rf, int cf)
+    {
+        //System.out.println(st.size());
+        while(st.contains(new Point(rf, cf))==false)
+        {
+            Point ps;
+            int dis=Integer.MAX_VALUE;
+            int x=0;
+            int y=0;
+            
+            for(Point pc: dist.keySet())
+            {
+                if(!(st.contains(pc)))
+                {
+                    if(dist.get(pc)<dis)
+                    {
+                        x=pc.x;
+                        y=pc.y;
+                        dis=dist.get(pc);
+                    }
+                }
+            }
+            Point p=new Point(x,y); 
+            st.add(p);
+            remove(p);
+            /*System.out.println(x+" "+y);
+            System.out.println(st);
+            System.out.println(dist);*/
+            
+            
+            int[] dx={0, -1, 0, 1};
+            int[] dy={-1, 0, 1, 0};
+            
+            for(int i=0; i<4; i++)
+            {
+                int r=x+dx[i];
+                int c=y+dy[i];
+                Point pn=new Point(r,c);
+                
+                
+                if(r<0 || c<0 || r>rf || c>cf || st.contains(pn))
+                    continue;
+                else
+                {
+                    if(dist.containsKey(pn))
+                    {
+                        if(dist.get(pn) > dist.get(p) + hm.get(pn))
+                            dist.put(pn, dist.get(p) + hm.get(pn));
+                    }
+                    else
+                        dist.put(pn, dist.get(p) + hm.get(pn));
+                }
+            }
+            //System.out.println();
+        }
+    }
+    
+    static void remove(Point p)
+    {
+        int r=p.x;
+        int c=p.y;
+        
+        if(r-1>=0 && st.contains(new Point(r-1, c)))
+            dist.remove(new Point(r-1, c));
+        if(c-1>=0 && st.contains(new Point(r, c-1)))
+            dist.remove(new Point(r, c-1));
+    }
+}
