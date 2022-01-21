@@ -1,0 +1,115 @@
+import java.io.*;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.*;
+
+public class MyClass
+{
+    static ArrayList<Integer> al = new ArrayList<Integer>();
+    public static void main(String args[])
+    {
+        try  
+        {  
+            File file = new File("/uploads/Demos.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            
+            while((line=br.readLine())!=null)  
+            {
+                String[] bre=line.split("");
+                for(int i=0; i<bre.length; i++)
+                {
+                    char c = bre[i].charAt(0);
+                    findBinary(c);
+                }
+            }
+            fr.close();
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+        
+        for(int i=0; i<al.size(); i++)
+        System.out.print(al.get(i));
+    }
+    
+    public static void findBinary(char c)
+    {
+        String i="";
+        switch(c)
+        {
+            case '0':
+                i="0000";
+                break;
+                
+            case '1':
+                i="0001";
+                break;
+            
+            case '2':
+                i="0010";
+                break;
+                
+            case '3':
+                i="0011";
+                break;
+                
+            case '4':
+                i="0100";
+                break;
+                
+            case '5':
+                i="0101";
+                break;
+                
+            case '6':
+                i="0110";
+                break;
+                
+            case '7':
+                i="0111";
+                break;
+                
+            case '8':
+                i="1000";
+                break;
+                
+            case '9':
+                i="1001";
+                break;
+                
+            case 'A':
+                i="1010";
+                break;
+                
+            case 'B':
+                i="1011";
+                break;
+                
+            case 'C':
+                i="1100";
+                break;
+            
+            case 'D':
+                i="1101";
+                break;
+                
+            case 'E':
+                i="1110";
+                break;
+                
+            case 'F':
+                i="1111";
+                break;
+        }
+        
+        for(int j=0; j<i.length(); j++)
+        {
+            char ch=i.charAt(j);
+            al.add(Integer.parseInt(Character.toString(ch)));
+        }
+    }
+}
