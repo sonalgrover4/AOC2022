@@ -1,0 +1,78 @@
+import java.io.*;
+import java.util.HashMap;
+
+public class MyClass {
+    
+    public static HashMap<String, Integer> points = new HashMap<String, Integer>();
+    
+    public static void main(String args[])
+    {
+        try  
+        {  
+            File file = new File("/uploads/Day_5.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            while((line=br.readLine())!=null)  
+            {  
+                String[] pts = line.split("->");
+                String pt1=pts[0].trim();
+                String pt2=pts[1].trim();
+                
+                String[] p1=pt1.split(",");
+                int p1_x=Integer.parseInt(p1[0]);
+                int p1_y=Integer.parseInt(p1[1]);
+                
+                String[] p2=pt2.split(",");
+                int p2_x=Integer.parseInt(p2[0]);
+                int p2_y=Integer.parseInt(p2[1]);
+                
+                int x1,x2,y1,y2;
+                int x_inc=findInc(p1_x, p2_x);
+                int y_inc=findInc(p1_y, p2_y);
+                String s=Integer.toString(p1_x)+","+Integer.toString(p1_y);
+                MyClass.mapPoints(s);
+                
+                do
+                {
+                    p1_x+=x_inc;
+                    p1_y+=y_inc;
+                    s=Integer.toString(p1_x)+","+Integer.toString(p1_y);
+                    MyClass.mapPoints(s);
+                }while(p1_x!=p2_x || p1_y!=p2_y);
+            }
+            fr.close();    //closes the stream and release the resources
+            
+            int c=0;
+            for (String i : MyClass.points.keySet())
+            {
+                if(MyClass.points.get(i)>=2)
+                    c+=1;
+            }
+            System.out.println(c);
+
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+    }
+    
+    public static int findInc(int a, int b)
+    {
+        if(a-b<0)
+            return 1;
+        else if(a-b>0)
+            return -1;
+        else
+            return 0;
+    }
+    
+    public static void mapPoints(String s)
+    {
+        if(MyClass.points.containsKey(s))
+            MyClass.points.put(s, MyClass.points.get(s) + 1);
+        else
+            MyClass.points.put(s, 1);
+    }
+}
