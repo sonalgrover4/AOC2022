@@ -1,0 +1,169 @@
+import java.io.*;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.*;
+import java.util.Arrays;
+import java.util.Map.Entry;
+
+public class MyClass {
+    
+    public static void main(String args[])
+    {
+        try  
+        {  
+            File file = new File("/uploads/Day_8.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            long tot=0;
+            while((line=br.readLine())!=null)  
+            {
+                String[] bre=line.split("\\|");
+                String[] in=bre[0].split(" ");
+                String[] op=bre[1].split(" ");
+            
+                ArrayList<String> ar2=new ArrayList<String>(Arrays.asList(in));
+                ArrayList<String> ar=new ArrayList<String>();
+                HashMap<Integer, String> hm=new HashMap<Integer,String>();
+                
+                while(ar2.size()!=0)
+                {
+                    for(int i=0; i<ar2.size(); i++)
+                    {
+                        String si=ar2.get(i);
+                        int li = si.length();
+                        String so_si=sort(si);
+                        switch(li)
+                        {
+                            case 2:
+                                hm.put(1, so_si);
+                                ar.add(si);
+                                break;
+                            case 4:
+                                hm.put(4, so_si);
+                                ar.add(si);
+                                break;
+                            case 3:
+                                hm.put(7, so_si);
+                                ar.add(si);
+                                break;
+                            case 7:
+                                hm.put(8, so_si);
+                                ar.add(si);
+                                break;
+                            case 5:
+                                if(hm.containsKey(5) && hm.containsKey(3))
+                                {
+                                    hm.put(2, so_si);
+                                    ar.add(si);
+                                    break;
+                                }
+                                if(hm.containsKey(6))
+                                {
+                                    if(check(hm.get(6), si))
+                                    {
+                                        hm.put(5, so_si);
+                                        ar.add(si);
+                                        break;
+                                    }
+                                }
+                                if(hm.containsKey(1))
+                                {
+                                    if(check(si, hm.get(1)))
+                                    {
+                                        hm.put(3, so_si);
+                                        ar.add(si);
+                                        break;
+                                    }
+                                }
+                                break;
+                            case 6:
+                                if(hm.containsKey(0))
+                                {
+                                    hm.put(6, so_si);
+                                    ar.add(si);
+                                    break;
+                                }
+                                if(hm.containsKey(9) && hm.containsKey(1))
+                                {
+                                    if(check(si, hm.get(1)))
+                                    {
+                                        hm.put(0, so_si);
+                                        ar.add(si);
+                                        break;
+                                    }
+                                }
+                                if(hm.containsKey(4))
+                                {
+                                    if(check(si, hm.get(4)))
+                                    {
+                                        hm.put(9, so_si);
+                                        ar.add(si);
+                                        break;
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                    //System.out.println(hm);
+                    //System.out.println(ar2);
+                    //System.out.println(ar);
+                    if(ar.size()>0)
+                        ar2.removeAll(ar);
+                    ar.clear();
+                    //System.out.println(ar2);
+                    //System.out.println(ar);
+                }
+                //System.out.println(hm);
+                
+                
+                long val=0;
+                for(int j=0; j<op.length; j++)
+                {
+                    String o=op[j];
+                    String so_so=sort(o);
+                    for (Entry<Integer, String> entry : hm.entrySet())
+                    {
+                        if (entry.getValue().equals(so_so))
+                        {
+                            int c=entry.getKey();
+                            val=(val*10)+c;
+                        }
+                    }
+                }
+                //System.out.println(val);
+                //Long l = new Long(val);
+                tot+=val;
+                hm.clear();
+                ar.clear();
+                ar2.clear();
+            }
+            fr.close();    //closes the stream and release the resources
+            
+            System.out.println(tot);
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+    }
+    
+    static String sort(String s)
+    {
+        char tempArray[] = s.toCharArray();
+        Arrays.sort(tempArray);
+        return new String(tempArray);
+    }
+    
+    static boolean check(String s1, String s2)
+    {
+        boolean flag=true;
+        String[] temp = s2.split("");
+        for(int i=0; i<temp.length; i++)
+        {
+            if(!(s1.contains(temp[i])))
+                flag=false;
+        }
+        return flag;
+    }
+}
