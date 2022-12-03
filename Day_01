@@ -1,45 +1,56 @@
-import java.io.*;  
+import java.io.*;
+import java.util.HashMap;
+import java.util.*;
+
 
 public class MyClass {
-    public static void main(String args[]) {
     
-        int aim=0;
-        int hor=0;
-        int dep=0;
+    public static void main(String args[])
+    {
+        ArrayList<Integer> al = new ArrayList<Integer>();
+        
         try  
         {  
-            File file = new File("/uploads/Day_2.txt");    //creates a new file instance  
+            File file = new File("/uploads/Day_01.txt");    //creates a new file instance  
             FileReader fr=new FileReader(file);   //reads the file  
             BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
-            StringBuffer sb=new StringBuffer();    //constructs a string buffer with no characters  
-            String line;  
+            String line;
+            String s="";
+            int sum=0;
             while((line=br.readLine())!=null)  
-            {  
-                
-                String[] part = line.split(" ");
-                String dir = part[0];
-                String v = part[1];
-                int val = Integer.parseInt(v);
-                
-                
-                if(dir.equals("forward"))
-                {
-                    hor+=val;
-                    dep+=aim*val;
+            {
+                if(line.length()!=0)
+                {                
+                    s=line;
+                    int num=Integer.parseInt(s.trim());
+                    //System.out.print(num);
+                    sum+=num;
                 }
-                else if(dir.equals("down"))
-                    aim+=val;
-                else if(dir.equals("up"))
-                    aim-=val;
-                
-            }  
-            fr.close();    //closes the stream and release the resources 
-            System.out.println(dep*hor);
-        }  
-        catch(IOException e)  
+                else
+                {
+                    al.add(sum);
+                    sum=0;
+                }
+            }
+            fr.close();    //closes the stream and release the resources
+            al.add(sum);
+        }
+        catch(Exception e)  
         {  
             e.printStackTrace();  
-        }  
-          
+        }
+        Integer max = Collections.max(al);
+        System.out.println(max);
+        
+        int max_sum=max;
+        al.remove(max);
+        
+        for(int i=1; i<=2; i++)
+        {
+            max = Collections.max(al);
+            max_sum += max;
+            al.remove(max);
+        }
+        System.out.println(max_sum);
     }
 }
