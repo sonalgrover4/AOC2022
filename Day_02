@@ -1,45 +1,91 @@
-import java.io.*;  
+import java.io.*;
+import java.util.HashMap;
+import java.util.*;
+
 
 public class MyClass {
-    public static void main(String args[]) {
     
-        int aim=0;
-        int hor=0;
-        int dep=0;
+    public static void main(String args[])
+    {
+        ArrayList<String> al = new ArrayList<String>();
+        al.add("A");
+        al.add("B");
+        al.add("C");
+        int sum=0;
         try  
         {  
-            File file = new File("/uploads/Day_2.txt");    //creates a new file instance  
+            File file = new File("/uploads/Day_02.txt");    //creates a new file instance  
             FileReader fr=new FileReader(file);   //reads the file  
             BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
-            StringBuffer sb=new StringBuffer();    //constructs a string buffer with no characters  
-            String line;  
+            String line;
+            
             while((line=br.readLine())!=null)  
-            {  
+            {
+                line = line.replace('X', 'A');
+                line = line.replace('Y', 'B');
+                line = line.replace('Z', 'C');
+                //System.out.println(line);
+                String[] ch = line.split(" ");
                 
-                String[] part = line.split(" ");
-                String dir = part[0];
-                String v = part[1];
-                int val = Integer.parseInt(v);
+                sum+=al.indexOf(ch[1])+1;
                 
                 
-                if(dir.equals("forward"))
-                {
-                    hor+=val;
-                    dep+=aim*val;
-                }
-                else if(dir.equals("down"))
-                    aim+=val;
-                else if(dir.equals("up"))
-                    aim-=val;
-                
-            }  
-            fr.close();    //closes the stream and release the resources 
-            System.out.println(dep*hor);
-        }  
-        catch(IOException e)  
+                if((al.indexOf(ch[1]) == al.indexOf(ch[0])+1) || ((al.indexOf(ch[1]) == 0) && (al.indexOf(ch[0]) == 2)))
+                    sum+=6;
+                else if(al.indexOf(ch[0]) == al.indexOf(ch[1]))
+                    sum+=3;
+                //System.out.println(sum);
+            }
+            fr.close();    //closes the stream and release the resources
+        }
+        catch(Exception e)  
         {  
             e.printStackTrace();  
-        }  
-          
+        }
+        System.out.println(sum);
+        sum=0;
+        try  
+        {  
+            File file = new File("/uploads/Day_02.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            
+            while((line=br.readLine())!=null)  
+            {
+                int index=-1;
+                int new_index=-1;
+                String[] ch = line.split(" ");
+                String a=ch[1];
+                
+                if(a.equals("X"))
+                {
+                    index = al.indexOf(ch[0]);
+                    new_index = index-1;
+    
+                    if (new_index<0)
+                        new_index=2;
+                    sum+=new_index+1;
+                }
+                else if(a.equals("Y"))
+                    sum=sum+3+al.indexOf(ch[0])+1;
+                else
+                {
+                    index = al.indexOf(ch[0]);
+                    new_index = index+1;
+                    
+                    if (new_index==al.size())
+                        new_index=0;
+                    sum=sum+6+new_index+1;
+                }
+                index=-1;
+                new_index=-1;
+            }
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+        System.out.println(sum);
     }
 }
