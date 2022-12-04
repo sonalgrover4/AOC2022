@@ -29,7 +29,7 @@ public class MyClass {
                 else
                 {
                     al.add(sum);
-                    sum=0;
+                    sum = 0;
                 }
             }
             fr.close();    //closes the stream and release the resources
