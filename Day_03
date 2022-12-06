@@ -1,0 +1,83 @@
+import java.io.*;
+import java.util.HashMap;
+import java.util.*;
+
+
+public class MyClass {
+    
+    public static void main(String args[])
+    {
+        try  
+        {  
+            File file = new File("/uploads/Day_03.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            int sum=0;
+            while((line=br.readLine())!=null)  
+            {
+                int l = line.length();
+                String s1=line.substring(0,l/2);
+                String s2=line.substring(l/2,l);
+                
+                for(int i=0; i<s1.length(); i++)
+                {
+                    if(s2.contains(s1.substring(i, i+1)))
+                    {
+                        char c=s1.charAt(i);
+                        int a=c;
+                        if(Character.isUpperCase(c))
+                            sum=sum-65+27+a;
+                        else
+                            sum=sum-97+1+a;
+                        break;
+                    }
+                }
+            }
+            System.out.println(sum);
+            fr.close();    //closes the stream and release the resources
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+        
+        try  
+        {  
+            File file = new File("/uploads/Day_03.txt");    //creates a new file instance  
+            FileReader fr=new FileReader(file);   //reads the file  
+            BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
+            String line;
+            int sum=0;
+            while((line=br.readLine())!=null)  
+            {
+                String l1 = line;
+                String l2 = br.readLine();
+                String l3 = br.readLine();
+                
+                for(int i=0; i<l1.length(); i++)
+                {
+                    if(l2.contains(l1.substring(i, i+1)))
+                    {
+                        if(l3.contains(l1.substring(i, i+1)))
+                        {
+                            char c=l1.charAt(i);
+                            int a=c;
+                            if(Character.isUpperCase(c))
+                                sum=sum-65+27+a;
+                            else
+                                sum=sum-97+1+a;
+                            break;
+                        }
+                    }
+                }
+            }
+            System.out.println(sum);
+            fr.close();    //closes the stream and release the resources
+        }
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }
+    }
+}
