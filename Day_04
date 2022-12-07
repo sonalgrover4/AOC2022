@@ -1,193 +1,50 @@
-import java.io.*;  
-import java.util.ArrayList;
-
-class Objects{
-    int[][] a=new int[5][5];
-    int prod=0;
-    int freq=0;
-    
-    void printNum()
-    {
-        for(int i=0; i<5; i++)
-        {
-            for(int k=0; k<5; k++)
-                System.out.print(this.a[i][k] + "  ");
-            System.out.println();
-        }
-        System.out.println("Freq is "+this.freq);
-        System.out.println("Prod is "+this.prod);
-        
-    }
-    
-    void replace(int num, int f)
-    {
-        if(this.prod==0)
-        {
-            for(int i=0; i<5; i++)
-            {
-                for(int k=0; k<5; k++)
-                {
-                    if(this.a[i][k]==num)
-                    {
-                        this.a[i][k]=-1;
-                        if(this.checkCompletion(i, k))
-                        {
-                            this.freq=f;
-                            this.calculateProduct(num);
-                        }
-                    }
-                    
-                }
-            }
-        }
-    }
-    
-    void calculateProduct(int num)
-    {
-        for(int i=0; i<5; i++)
-        {
-            for(int k=0; k<5; k++)
-            {
-                if(this.a[i][k]!=-1)
-                    this.prod+=this.a[i][k];
-            }
-        }
-        this.prod*=num;
-    }
-    
-    boolean checkCompletion(int r, int c)
-    {
-        int r_flag=0;
-        int c_flag=0;
-        
-        for(int i=0; i<5; i++)
-        {
-            if(this.a[i][c]!=-1)
-                c_flag=1;
-            
-            if(this.a[r][i]!=-1)
-                r_flag=1;
-        }
-        
-        if(r_flag==0 || c_flag==0)
-            return true;
-        else
-            return false;
-    }
-}
+import java.io.*;
+import java.util.HashMap;
+import java.util.*;
 
 
 public class MyClass {
-    public static void main(String args[]) {
-
-       // int d2[][]=new int[5][5];
-        String line;
-        int x=0;
-       
-        int rno=0;
-        int len=0;
-        ArrayList<Integer> nmbrs=new ArrayList<Integer>();
-        String allnums="";
-        ArrayList<Objects> al = new ArrayList<Objects>();
+    
+    public static void main(String args[])
+    {
         try  
         {  
-            File file = new File("/uploads/Day_4.txt");    //creates a new file instance  
+            File file = new File("/uploads/Day_04.txt");    //creates a new file instance  
             FileReader fr=new FileReader(file);   //reads the file  
             BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
-            StringBuffer sb=new StringBuffer();    //constructs a string buffer with no characters  
-
+            String line;
+            int count=0;
+            int count1=0;
+            int count2=0;
             while((line=br.readLine())!=null)  
-            {  
-                if(line.contains(","))
-                {
-                    String[] temp = line.split(",");
-                    len=temp.length;
-                    for(int i=0; i<len; i++)
-                        nmbrs.add(Integer.parseInt(temp[i]));
-                }
-                    
+            {
+                count++;
+                String[] pair=line.split(",");
+                String[] p1=pair[0].split("-");
+                String[] p2=pair[1].split("-");
                 
-                else
-                {
-                    if(line.length()>1)
-                    {
-                        allnums+=line;
-                        allnums+=" ";
-                    }
-                    else
-                    {
-                        int[] arr = new int[25];
-                        if(allnums.length()>0)
-                        {
-                            String[] a = allnums.split(" ");
-                            
-                            int r=0;
-                            for(int i=0; i<a.length;i++)
-                            {
-                                if(a[i].trim()!="")
-                                {
-                                    arr[r]=Integer.parseInt(a[i]);
-                                    r+=1;
-                                }
-                            }
-                            
-                            r=0;
-                            Objects o = new Objects();
-                            for(int j=0; j<5; j++)
-                            {
-                                for(int k=0; k<5; k++)
-                                {
-                                    o.a[j][k]=arr[r];
-                                    r+=1;
-                                }
-                            }
-                            al.add(o);
-                            allnums="";
-                        }
-                    }
-                }
+                int l1=Integer.parseInt(p1[0]);
+                int l2=Integer.parseInt(p2[0]);
+                
+                int u1=Integer.parseInt(p1[1]);
+                int u2=Integer.parseInt(p2[1]);
+                
+                //System.out.println(l1+" "+l2+" "+u1+" "+u2);
+                if(l1>=l2 && u1<=u2)
+                    count1++;
+                else if(l2>=l1 && u2<=u1)
+                    count1++;
+                    
+                if(u2<l1 || u1<l2)
+                    count2++;
             }
+            System.out.println(count1);
+            System.out.println(count-count2);
             fr.close();    //closes the stream and release the resources
-        }  
+        }
         catch(Exception e)  
         {  
             e.printStackTrace();  
         }
-         
-         
-        int [][]freqprod = new int[2][al.size()];
-        for(int i=0; i<nmbrs.size(); i++)
-        {
-            int n = nmbrs.get(i);
-            
-            for(int j=0; j<al.size(); j++)
-            {
-                al.get(j).replace(n, i+1);
-                //checkCompletion()
-            }
-            
-        }
-        
-        
-        int max=0;
-        int min=nmbrs.size();
-        int max_prod=0;
-        int min_prod=0;
-        for(int j=0; j<al.size(); j++)
-        {
-           if(al.get(j).freq>max)
-           {
-               max=al.get(j).freq;
-               max_prod=al.get(j).prod;
-           }
-           
-           if(al.get(j).freq<min)
-           {
-               min=al.get(j).freq;
-               min_prod=al.get(j).prod;
-           }
-        }
-        System.out.println(max_prod);
-        System.out.println(min_prod);
     }
 }
