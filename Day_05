@@ -1,78 +1,102 @@
 import java.io.*;
 import java.util.HashMap;
+import java.util.*;
+
 
 public class MyClass {
     
-    public static HashMap<String, Integer> points = new HashMap<String, Integer>();
-    
     public static void main(String args[])
     {
+        ArrayList<ArrayList<String>> stack = new ArrayList<ArrayList<String>>();
+        ArrayList<ArrayList<String>> stack_copy = new ArrayList<ArrayList<String>>();
         try  
         {  
-            File file = new File("/uploads/Day_5.txt");    //creates a new file instance  
+            File file = new File("/uploads/Day_05.txt");    //creates a new file instance  
             FileReader fr=new FileReader(file);   //reads the file  
             BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
             String line;
+            int i=0;
+            int length=0;
             while((line=br.readLine())!=null)  
-            {  
-                String[] pts = line.split("->");
-                String pt1=pts[0].trim();
-                String pt2=pts[1].trim();
-                
-                String[] p1=pt1.split(",");
-                int p1_x=Integer.parseInt(p1[0]);
-                int p1_y=Integer.parseInt(p1[1]);
-                
-                String[] p2=pt2.split(",");
-                int p2_x=Integer.parseInt(p2[0]);
-                int p2_y=Integer.parseInt(p2[1]);
-                
-                int x1,x2,y1,y2;
-                int x_inc=findInc(p1_x, p2_x);
-                int y_inc=findInc(p1_y, p2_y);
-                String s=Integer.toString(p1_x)+","+Integer.toString(p1_y);
-                MyClass.mapPoints(s);
-                
-                do
-                {
-                    p1_x+=x_inc;
-                    p1_y+=y_inc;
-                    s=Integer.toString(p1_x)+","+Integer.toString(p1_y);
-                    MyClass.mapPoints(s);
-                }while(p1_x!=p2_x || p1_y!=p2_y);
-            }
-            fr.close();    //closes the stream and release the resources
-            
-            int c=0;
-            for (String i : MyClass.points.keySet())
             {
-                if(MyClass.points.get(i)>=2)
-                    c+=1;
-            }
-            System.out.println(c);
+                int l = line.length();
+                if(i==0)
+                {
+                    length=l;
+                    for(int j=1; j<=(l+1)/4; j++)
+                        stack.add(new ArrayList<String>());
+                    i=-1;
+                }
+                
+                if(line.contains("["))
+                {
+                    for(int j=1; j<l; j=j+4)
+                    {
+                        String s=line.substring(j,j+1);
+                        if(s.trim()!="")
+                            stack.get(j/4).add(s);
+                    }
+                }
+                
+                if(l==0)
+                {
+                    for(int j=1; j<=(length+1)/4; j++)
+                        Collections.reverse(stack.get(j-1));
+                    for(int j=0; j<stack.size(); j++)
+                    {
+                        stack_copy.add(new ArrayList<String>());
+                        for(int k=0; k<stack.get(j).size(); k++)
+                        {
+                            String temp=stack.get(j).get(k);
+                            stack_copy.get(j).add(temp);
+                        }
+                    }
+                    
+                }
+                
+                if(line.contains("move"))
+                {
+                    String[] ins = line.split(" ");
+                    int no=Integer.parseInt(ins[1]);
+                    int from=Integer.parseInt(ins[3]);
+                    int to=Integer.parseInt(ins[5]);
+                    
+                    for(int j=1; j<=no; j++)
+                    {
+                        int size=stack.get(from-1).size();
+                        String pkt=stack.get(from-1).get(size-1);
+                        stack.get(from-1).remove(size-1);
+                        stack.get(to-1).add(pkt);
+                    }
 
+                    for(int k=no; k>=1; k--)
+                    {
+                        int size=stack_copy.get(from-1).size();
+                        String pkt=stack_copy.get(from-1).get(size-k);
+                        stack_copy.get(from-1).remove(size-k);
+                        stack_copy.get(to-1).add(pkt);
+                    }
+                }
+            }
+            String crate="";
+            String crate_copy="";
+            for(int j=1; j<=(length+1)/4; j++)
+            {
+                int li=stack.get(j-1).size();
+                String lst=stack.get(j-1).get(li-1);
+                crate=crate+lst;
+                
+                int lc=stack_copy.get(j-1).size();
+                String lstc=stack_copy.get(j-1).get(lc-1);
+                crate_copy=crate_copy+lstc;
+            }
+            System.out.println(crate);
+            System.out.println(crate_copy);
+            fr.close();    //closes the stream and release the resources
         }
         catch(Exception e)  
         {  
             e.printStackTrace();  
         }
-    }
-    
-    public static int findInc(int a, int b)
-    {
-        if(a-b<0)
-            return 1;
-        else if(a-b>0)
-            return -1;
-        else
-            return 0;
-    }
-    
-    public static void mapPoints(String s)
-    {
-        if(MyClass.points.containsKey(s))
-            MyClass.points.put(s, MyClass.points.get(s) + 1);
-        else
-            MyClass.points.put(s, 1);
     }
 }
