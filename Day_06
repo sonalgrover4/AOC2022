@@ -1,58 +1,87 @@
 import java.io.*;
-import java.util.HashMap;
 import java.util.*;
-
+import java.util.HashMap.*;
 
 public class MyClass {
     
     public static void main(String args[])
     {
-        HashMap<Integer, Long> hm1 = new HashMap<Integer, Long>();
-        HashMap<Integer, Long> hm2 = new HashMap<Integer, Long>();
+        HashMap<String, Integer> mrk1 = new HashMap<String, Integer>();
         
         try  
         {  
-            File file = new File("/uploads/Day_6.txt");    //creates a new file instance  
+            File file = new File("/uploads/Day_06.txt");    //creates a new file instance  
             FileReader fr=new FileReader(file);   //reads the file  
             BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream  
             String line;
-            String s="";
+            String data="";
+            int lst=0;
             while((line=br.readLine())!=null)  
             {
-                s+=line;
+                data+=line;
             }
             fr.close();    //closes the stream and release the resources
             
-            String[] num = s.split(",");
-            for(int i=0; i<num.length; i++)
-                addMapVals(hm1, Integer.parseInt(num[i]), 1);
+           // System.out.println(data);
             
-            for(int i=0; i<256; i++)
+            for(int i=0; i<data.length(); i++)
             {
-                for (Integer key : hm1.keySet())
+                String temp=data.substring(i, i+1);
+                //addElement(mrk1, temp);
+                if(i==0)
                 {
-                    long val = hm1.get(key);
-                    if(key == 0)
+                    for(int j=0; j<=3; j++)
                     {
-                        addMapVals(hm2, 0, 0);
-                        addMapVals(hm2, 8, val);
-                        addMapVals(hm2, 6, val);
+                        String x=data.substring(j, j+1);
+                        addElement(mrk1, x);
                     }
-                    else
-                    {
-                        addMapVals(hm2, key-1, val);
-                        addMapVals(hm2, key, 0);
-                    }
+                     lst=4;   
                 }
-                
-                hm1.clear();
-                hm1.putAll(hm2);
-                hm2.clear();
+                else
+                {
+                    String x=data.substring(i+3, i+4);
+                    addElement(mrk1, x);
+                    lst=i+4;
+                }
+                //System.out.println(mrk1);   
+                if(mrk1.size()==4)
+                {
+                    System.out.println(lst);
+                    break;
+                }
+                else
+                    removeElement(mrk1, temp);
             }
-            Long val=0L;
-            for (Integer key : hm1.keySet())
-                val+=hm1.get(key);
-            System.out.println(val);
+            mrk1.clear();
+            for(int i=0; i<data.length(); i++)
+            {
+                String temp=data.substring(i, i+1);
+                //addElement(mrk1, temp);
+                if(i==0)
+                {
+                    for(int j=0; j<=13; j++)
+                    {
+                        String x=data.substring(j, j+1);
+                        addElement(mrk1, x);
+                    }
+                     lst=14;   
+                }
+                else
+                {
+                    String x=data.substring(i+13, i+14);
+                    addElement(mrk1, x);
+                    lst=i+14;
+                }
+                //System.out.println(mrk1);   
+                if(mrk1.size()==14)
+                {
+                    System.out.println(lst);
+                    break;
+                }
+                else
+                    removeElement(mrk1, temp);
+            }
+            
         }
         catch(Exception e)  
         {  
@@ -60,11 +89,18 @@ public class MyClass {
         }
     }
     
-    static void addMapVals(HashMap<Integer, Long> hm1, Integer key, long val)
+    public static void addElement(HashMap<String, Integer> hm, String s)
     {
-        if(hm1.containsKey(key))
-            hm1.put(key, hm1.get(key) + val);
+        if(hm.containsKey(s))
+            hm.put(s, hm.get(s)+1);
         else
-            hm1.put(key, val);
+            hm.put(s, 1);
+    }
+    
+    public static void removeElement(HashMap<String, Integer> hm, String s)
+    {
+        hm.put(s, hm.get(s)-1);
+        if(hm.get(s)==0)
+            hm.remove(s);
     }
 }
